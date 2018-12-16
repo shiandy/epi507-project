@@ -1,0 +1,7 @@
+# data files
+1000-genomes
+nealelab-uk-biobank
+
+.snakemake
+.Rhistory
+*.rds
