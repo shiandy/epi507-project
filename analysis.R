@@ -31,9 +31,17 @@ traitdt_merged <- reduce(trait_dt_lst, merge, all = TRUE)
 
 pheno_corr <- readRDS("pheno_corr.rds")
 
+runVC <- function(zstats, Sigma = pheno_corr) {
+    ret <- NA
+    try({
+        ret <- VC(zstats, Sigma)
+    })
+    return(ret)
+}
+
 system.time({
-    vc_stats <- apply(traitdt_merged[, -1], 1, Wald, Sigma = pheno_corr)
+    vc_stats <- apply(traitdt_merged[, -1], 1, runVC)
 })
 vc_dt <- data.table(variant = traitdt_merged$variant,
                     vc_stat = vc_stats)
-saveRDS(vc_dt, "mpat_df.rds")
+saveRDS(vc_dt, "mpat_dt.rds")

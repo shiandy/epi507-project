@@ -4,7 +4,7 @@ CHROM.append("X")
 
 rule all:
     input:
-        "mpat_df.rds"
+        "manhattan.png"
 
 # get individuals of GBR ancestry
 rule get_indiv:
@@ -85,6 +85,14 @@ rule analysis:
     input:
         "pheno_corr.rds"
     output:
-        "mpat_df.rds"
+        "mpat_dt.rds"
     shell:
         "Rscript analysis.R"
+
+rule plot:
+    input:
+        "mpat_dt.rds"
+    output:
+        "manhattan.png"
+    shell:
+        "Rscript plot.R"
