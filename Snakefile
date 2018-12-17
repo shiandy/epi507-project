@@ -1,4 +1,3 @@
-import os
 CHROM = list(map(str, range(1, 23)))
 CHROM.append("X")
 
