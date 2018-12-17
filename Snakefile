@@ -3,7 +3,8 @@ CHROM.append("X")
 
 rule all:
     input:
-        "manhattan.png"
+        "manhattan.png",
+        "manhattan_23111.png"
 
 # get individuals of GBR ancestry
 rule get_indiv:
@@ -92,6 +93,7 @@ rule plot:
     input:
         "mpat_dt.rds"
     output:
-        "manhattan.png"
+        "manhattan.png",
+        "manhattan_23111.png"
     shell:
         "Rscript plot.R"
