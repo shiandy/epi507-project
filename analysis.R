@@ -1,3 +1,5 @@
+# Analyze UK Biobank fat data using the method from Liu and Lin (JASA
+# 2018).
 library(MPAT)
 library(data.table)
 library(purrr)
@@ -5,6 +7,8 @@ library(purrr)
 MAF_CUTOFF <- 0.05
 traits <- c("23111", "23115", "23119", "23123", "23127")
 trait_dt_lst <- list()
+
+# read in each trait one by one
 for (trait in traits) {
     message(sprintf("Reading trait %s...", trait))
     fname <- sprintf("nealelab-uk-biobank/%s_irnt.gwas.imputed_v3.both_sexes.tsv.bgz",
@@ -26,11 +30,12 @@ walk2(trait_dt_lst, names(trait_dt_lst),
           setnames(dt, old = "tstat", new = newname)
       })
 
-# merge
+# merge all traits together
 traitdt_merged <- reduce(trait_dt_lst, merge, all = TRUE)
 
 pheno_corr <- readRDS("pheno_corr.rds")
 
+# run variance component test, ignore errors
 runVC <- function(zstats, Sigma = pheno_corr) {
     ret <- NA
     try({

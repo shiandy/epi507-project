@@ -1,3 +1,4 @@
+# split the Neale Lab UK Biobank summary statistics by chromosome
 import argparse
 
 CHROM = list(map(str, range(1, 23)))
@@ -9,7 +10,7 @@ def main():
 
     args = parser.parse_args()
 
-    # open all the files
+    # open all the output files (chr 1-22, and chr X)
     outfiles_dict = dict()
     for chrom in CHROM:
         # hard code file name
@@ -18,9 +19,12 @@ def main():
         outfiles_dict[chrom] = f
 
     with open(args.fname) as f:
+        # write the header line to each output file
         line1 = f.readline()
         for key, outfile in outfiles_dict.items():
             outfile.write(line1)
+
+        # write the line to the appropriate chromosome file
         for line in f:
             chrom = line.split("\t")[1]
             out_f = outfiles_dict[chrom]

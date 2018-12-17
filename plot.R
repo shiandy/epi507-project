@@ -1,3 +1,4 @@
+# plot the result
 library(qqman)
 library(data.table)
 library(tidyr)
@@ -5,6 +6,9 @@ library(dplyr)
 
 MAF_CUTOFF <- 0.05
 
+#######################################################################
+# manhattan plot for multiple phenotype analysis
+#######################################################################
 mpat_dt <- readRDS("mpat_dt.rds")
 mpat_dt[, sum(vc_stat <= 5e-8, na.rm = TRUE)]
 
@@ -22,6 +26,10 @@ png("manhattan.png", width = 1024, height = 960)
 manhattan(mpat_dt, p = "vc_stat", main = "VC Test Manhattan Plot")
 dev.off()
 
+
+#######################################################################
+# manhattan plot for single trait
+#######################################################################
 fname <- sprintf("nealelab-uk-biobank/%s_irnt.gwas.imputed_v3.both_sexes.tsv.bgz",
                  "23111")
 trait_dt <- fread(cmd = paste("zcat", fname))

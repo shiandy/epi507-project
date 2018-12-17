@@ -1,3 +1,5 @@
+# estimate phenotype correlation
+
 library(data.table)
 
 filtered_variants <- readRDS("filtered_variants.rds")
@@ -6,6 +8,7 @@ setkey(filtered_variants, variant)
 traits <- c("23111", "23115", "23119", "23123", "23127")
 tstats_indep_lst <- list()
 
+# read in traits one by one and merge with filtered variants from PLINK
 for (trait in traits) {
     message(sprintf("Working on trait %s...", trait))
     fname <- sprintf("nealelab-uk-biobank/%s_irnt.gwas.imputed_v3.both_sexes.tsv.bgz",
@@ -17,7 +20,7 @@ for (trait in traits) {
     tstats_indep_lst[[trait]] <- trait_indep
 }
 
-# sanity check
+# sanity check: make sure equal number of rows and same variants
 lapply(tstats_indep_lst, nrow)
 variants_lst <- lapply(tstats_indep_lst, function(x) { x$variant })
 rsid_lst <- lapply(tstats_indep_lst, function(x) { x$rsid })
@@ -27,6 +30,7 @@ for (ind in 1:4) {
     stopifnot(all.equal(rsid_lst[[ind]], rsid_lst[[ind + 1]]))
 }
 
+# do the estimation
 teststats <- vapply(tstats_indep_lst, function(x) { x$tstat },
                     rep(1, nrow(tstats_indep_lst[[1]])))
 pheno_corr <- cor(teststats)

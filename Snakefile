@@ -1,6 +1,7 @@
 CHROM = list(map(str, range(1, 23)))
 CHROM.append("X")
 
+# run all, default
 rule all:
     input:
         "manhattan.png",
@@ -64,6 +65,8 @@ rule split_variants:
     shell:
         "zcat {input} | python split_variants.py /dev/stdin"
 
+# Filter the Neale Lab UK Biobank summary statistics to only include the
+# independent SNPs from PLINK.
 rule filter_variants:
     input:
         expand("nealelab-uk-biobank/variants_chr{chrom}.tsv",
@@ -73,6 +76,7 @@ rule filter_variants:
     shell:
         "Rscript filter-variants.R"
 
+# Estimate the phenotype correlation
 rule est_pheno_corr:
     input:
         "filtered_variants.rds"
@@ -81,6 +85,7 @@ rule est_pheno_corr:
     shell:
         "Rscript est-pheno-corr.R"
 
+# Run the analysis
 rule analysis:
     input:
         "pheno_corr.rds"
@@ -89,6 +94,7 @@ rule analysis:
     shell:
         "Rscript analysis.R"
 
+# Plots
 rule plot:
     input:
         "mpat_dt.rds"
